@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 from unidecode import unidecode
+from ckeditor.fields import RichTextField
 
 STATUS = (
     (1, 'Started'),
@@ -18,11 +19,12 @@ class Project(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=120)
     slug = models.SlugField(unique=True)
-    description = models.TextField()
+    description = RichTextField()
     photo = models.ImageField(upload_to='photos/', null=True, blank=True)
     file = models.FileField(upload_to='files/', null=True, blank=True)
     started = models.DateTimeField(auto_now_add=True)
     ended = models.DateTimeField(blank=True, null=True)
+    deadline = models.DateField()
     tags = models.ManyToManyField(Tag)
 
     def save(self, *args, **kwargs):
@@ -40,7 +42,7 @@ class Priority(models.Model):
 class Task(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=120)
-    description = models.TextField()
+    description = RichTextField()
     status = models.CharField(choices=STATUS, max_length=120)
     deadline = models.DateField()
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -58,5 +60,5 @@ class Task(models.Model):
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    text = models.TextField()
+    text = RichTextField()
     dateCreation = models.DateTimeField(auto_now_add=True)

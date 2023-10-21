@@ -1,0 +1,47 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+    <title>Регистрация</title>
+</head>
+<body>
+    <section class="vh-100" style="background-color: #508bfc;">
+        <div class="container py-5 h-100">
+          <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+              <div class="card shadow-2-strong" style="border-radius: 1rem;">
+                <div class="card-body p-5 text-center">
+      
+                  <form action="" method="post">
+                    {% csrf_token %}
+                    <h3 class="mb-5">Регистрация</h3>
+                    {% for f in form %}
+                    <div class="form-outline mb-4">
+                        <input name="{{ f.name }}" type="{{ f.field.widget.input_type }}" id="typeEmailX-2" class="form-control form-control-lg" />
+                        <label class="form-label" for="{{ f.label_for_id }}">{{ f.label }}</label>
+                    </div>
+                    <p style="color: #dd4b39;">{{ f.errors }}</p>
+                    {% endfor %}
+                    <div class="text-danger">{{form.non_field_errors}}</div>
+                    <div class="d-grid gap-2">
+                    <button class="btn btn-primary btn-lg btn-block" type="submit">Регистрация</button>
+                    <p>Уже есть аккаунт? <a href="{% url 'authentication:login' %}">Логин</a></p>
+                    </div>
+                  </form>
+      
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>
