@@ -12,10 +12,6 @@ class TaskAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
 
 
-class PriorityAdmin(admin.ModelAdmin):
-    search_fields = ('priority_name', )
-
-
 class TagAdmin(admin.ModelAdmin):
     search_fields = ('tag',)
 
@@ -25,7 +21,6 @@ class CommentAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Project, ProjectAdmin)
-admin.site.register(Priority, PriorityAdmin)
 admin.site.register(Task, TagAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Comment, CommentAdmin)

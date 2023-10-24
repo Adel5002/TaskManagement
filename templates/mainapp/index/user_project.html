@@ -1,9 +1,9 @@
 {% extends 'mainapp/base.html' %}
 
-
 {% block content %}
 <div class="container">
     <div class="row">
+        {% if projects %}
         {% for project in projects %}
         <div class="col-sm-6">
             <div class="form-control user-projects mt-5">
@@ -13,7 +13,13 @@
                 <a class="btn btn-outline-dark float-end" href="{{ project.get_absolute_url }}">Перейти</a><br><br>
             </div>
         </div>
+
         {% endfor %}
+        {% else %}
+            <div class="text-center" style="margin-top: 300px;">
+                <h1>Здесь пока ничего нет</h1>
+            </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

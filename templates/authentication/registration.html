@@ -12,7 +12,7 @@
     <title>Регистрация</title>
 </head>
 <body>
-    <section class="vh-100" style="background-color: #508bfc;">
+    <section class="vh-100" style="background: radial-gradient(red, blue);">
         <div class="container py-5 h-100">
           <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-12 col-md-8 col-lg-6 col-xl-5">
@@ -27,7 +27,6 @@
                         <input name="{{ f.name }}" type="{{ f.field.widget.input_type }}" id="typeEmailX-2" class="form-control form-control-lg" />
                         <label class="form-label" for="{{ f.label_for_id }}">{{ f.label }}</label>
                     </div>
-                    <p style="color: #dd4b39;">{{ f.errors }}</p>
                     {% endfor %}
                     <div class="text-danger">{{form.non_field_errors}}</div>
                     <div class="d-grid gap-2">

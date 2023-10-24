@@ -1,0 +1,7 @@
+.user-projects p {
+    max-width: 500px;
+}
+
+.user-projects .project-tags {
+    max-width: 300px;
+}
