@@ -1,5 +1,6 @@
 {% extends 'mainapp/base.html' %}
 
+
 {% block content %}
 <div class="container">
     <div class="row">
@@ -36,6 +37,24 @@
         {% else %}
             <h5>На данный момент задач не найдено!</h5>
         {% endif %}
+    </div>
+    <div class="row">
+        <div class="col-sm-7">
+            <h2 class="mt-5">Add Comment</h2>
+            <form class="mb-5 mt-4" action="{% url 'mainapp:add_comment' project.slug %}" method="post">
+                {% csrf_token %}
+                {{comment_form.media}}
+                {{comment_form.text }}
+                <button class="btn btn-outline-dark float-end mt-3" type="submit">отправить</button>
+            </form><br>
+            <hr>
+            <h2 class="mb-4">Comments</h2>
+            {% for comments in project.comment_set.all %}
+            <i class="fa-solid fa-user fa-sm"></i>  {{ comments.user }} &nbsp;&nbsp;&nbsp;&nbsp; <i class="fa-regular fa-calendar-days fa-sm"></i> {{ comments.dateCreation }}
+                {{ comments.text|safe }}<br>
+                
+            {% endfor %}
+        </div>
     </div>
 </div>
 {% endblock %}

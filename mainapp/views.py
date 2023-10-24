@@ -1,7 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView, DetailView
-from .models import Project, Tag
+from django.views.generic import ListView, DetailView, CreateView
 from django.contrib.auth.models import User
+from django.urls import reverse
+
+from .models import Project, Comment
+from .forms import AddCommentForm
+
 
 class ProjectsListView(ListView):
     template_name = 'mainapp/index/index.html'
@@ -12,7 +16,10 @@ class ProjectsListView(ListView):
         if not request.user.is_authenticated:
             return redirect('authentication:login')
 
-        return render(request, self.template_name, {'projects': self.model.objects.all()})
+        context = {
+            'projects': self.model.objects.all(),
+        }
+        return render(request, self.template_name, context)
 
 
 class UserProjectListView(ListView):
@@ -31,3 +38,25 @@ class UserProjectDetailView(DetailView):
     model = Project
     template_name = 'mainapp/project_details/project_details.html'
     context_object_name = 'project'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['comment_form'] = AddCommentForm
+        return context
+
+class AddComment(CreateView):
+    model = Comment
+    template_name = 'mainapp/project_details/project_details.html'
+    form_class = AddCommentForm
+
+    def form_valid(self, form):
+        form.instance.project = Project.objects.get(slug=self.kwargs['slug'])
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('mainapp:proj_details', kwargs={'slug': self.object.project.slug})
+
+
+
