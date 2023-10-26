@@ -50,9 +50,16 @@
             <hr>
             <h2 class="mb-4">Comments</h2>
             {% for comments in project.comment_set.all %}
-            <i class="fa-solid fa-user fa-sm"></i>  {{ comments.user }} &nbsp;&nbsp;&nbsp;&nbsp; <i class="fa-regular fa-calendar-days fa-sm"></i> {{ comments.dateCreation }}
+                {% if comments.user == user %}
+                <form action="{% url 'mainapp:delete_comment' comments.pk %}" method="post">
+                    {% csrf_token %}
+                    <i class="fa-solid fa-user fa-sm"></i>  {{ comments.user }} &nbsp;&nbsp;&nbsp;&nbsp; <i class="fa-regular fa-calendar-days fa-sm"></i> {{ comments.dateCreation }}
+                    <button class="btn btn-link text-dark text-decoration-none">[ Удалить ]</button>
+                </form>
+                {% else %}
+                <i class="fa-solid fa-user fa-sm"></i>  {{ comments.user }} &nbsp;&nbsp;&nbsp;&nbsp; <i class="fa-regular fa-calendar-days fa-sm"></i> {{ comments.dateCreation }}
+                {% endif %}
                 {{ comments.text|safe }}<br>
-                
             {% endfor %}
         </div>
     </div>

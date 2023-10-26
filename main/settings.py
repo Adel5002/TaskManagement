@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # Third-party libraries
     'ckeditor',
     'fontawesomefree',
+    'tempus_dominus',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',

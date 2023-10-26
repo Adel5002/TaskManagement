@@ -1,0 +1,32 @@
+{% extends 'mainapp/base.html' %}
+
+{% block title %}Редактировать{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row" style="background-color: whitesmoke;">
+        <h1 class="text-center mb-5 mt-5">Редактировать {{ object.name }}</h1>
+        <div class="col-sm-6 mx-auto">
+            <form class="mb-5" method="post">
+                {% csrf_token %}
+                {{ form.media }}
+                <label for="">{{ form.name.label }}</label>
+                <input placeholder="{{ form.name.field.widget.attrs.placeholder }}" class="form-control mb-3" type="{{ form.field.widget.input_type }}" name="{{ form.name.name }}" id="">
+                <label for="">{{ form.description.label }}</label>
+                {{ form.description }}
+                <label for="">{{ form.photo.label }}</label>
+                <div class="mb-3">{{ form.photo }}</div>
+                <label for="">{{ form.file.label }}</label>
+                <div class="mb-3">{{ form.file }}</div>
+                <label for="">{{ form.deadline.label }}</label>
+                <div class="mb-3">{{ form.deadline }}</div>
+                <label for="">{{ form.tags.label }}</label>
+                <div class="mb-3">{{ form.tags }}</div>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-dark" type="submit">Редактировать</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
