@@ -4,6 +4,7 @@ from django.utils.text import slugify
 from unidecode import unidecode
 from ckeditor.fields import RichTextField
 from django.urls import reverse
+from django.contrib.auth.models import Group
 
 STATUS = (
     ('Стартовал', 'Started'),
@@ -92,3 +93,10 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
+
+
+class ProjectGroup(Group):
+    group_author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='group_author', verbose_name='Автор группы')
+    assistants = models.ManyToManyField(User, verbose_name='Ассистенты', related_name='assistant')
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='Проект')
+

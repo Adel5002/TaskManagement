@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'ckeditor',
     'fontawesomefree',
     'tempus_dominus',
+    'django_select2'
+    
+    
     'allauth',
     'allauth.account',
     'allauth.socialaccount',

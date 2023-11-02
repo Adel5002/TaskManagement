@@ -10,6 +10,9 @@
         </div>
 
         <h4>Текущие задачи</h4>
+        {% if perms.mainapp.add_task %}
+        <a href="{% url 'mainapp:create_task' project.slug %}">Создать Новую</a>
+        {% endif %}
         {% if project.task_set.all %}
             {% for tasks in project.task_set.all %}
                 <div class="col-md-6 mt-3"> 
@@ -35,7 +38,7 @@
                 </div>
             {% endfor %}
         {% else %}
-            <h5>На данный момент задач не найдено!</h5>
+            <h5>На данный момент задач не <a href="{% url 'mainapp:create_task' project.slug %}">найдено!</a></h5>
         {% endif %}
     </div>
     <div class="row">

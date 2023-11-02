@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.models import Group
 
 
 class UserLoginForm(AuthenticationForm):
@@ -27,3 +28,8 @@ class UserSignupForm(UserCreationForm):
         model = User
         fields = ('username', 'email', 'password1', 'password2')
 
+    def save(self):
+        user = super(UserSignupForm, self).save(self.request)
+        group = Group.objects.get(name='NEW_USERS')
+        group.user_set.add(user)
+        return user

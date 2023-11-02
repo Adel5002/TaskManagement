@@ -20,7 +20,12 @@ class CommentAdmin(admin.ModelAdmin):
     search_fields = ('user', 'project')
 
 
+class ProjectGroupAdmin(admin.ModelAdmin):
+    search_fields = ('group_author', 'project')
+
+
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Task, TagAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Comment, CommentAdmin)
+admin.site.register(ProjectGroup, ProjectGroupAdmin)

@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (ProjectsListView, UserProjectListView, UserProjectDetailView, AddComment, DeleteComment,
-                    CreateProject, UpdateProject, DeleteProject)
+                    CreateProject, UpdateProject, DeleteProject, CreateGroup, CreateTask)
 
 app_name = 'mainapp'
 
@@ -13,4 +13,6 @@ urlpatterns = [
     path('project/<slug:slug>/', UserProjectDetailView.as_view(), name='proj_details'),
     path('project/<slug:slug>/add-comment/', AddComment.as_view(), name='add_comment'),
     path('delete-comment/<int:pk>/', DeleteComment.as_view(), name='delete_comment'),
+    path('create-group/', CreateGroup.as_view(), name='create_group'),
+    path('project/<slug:slug>/create-task/', CreateTask.as_view(), name='create_task'),
 ]

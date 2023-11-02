@@ -1,26 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
-from .models import Project, Comment
-from .forms import AddCommentForm, CreteProjectForm
+from .models import Project, Comment, ProjectGroup, Task
+from .forms import AddCommentForm, CreteProjectForm, CreateNewGroupForm, CreateTaskForm
+from .permissions import UserInGroupPermissionMixin
 
 
 # PROJECT RENDERING SECTION
-class ProjectsListView(ListView):
+class ProjectsListView(LoginRequiredMixin, ListView):
     template_name = 'mainapp/index/index.html'
     model = Project
-
-    # Redirecting to login page if user is not logged
-    def get(self, request):
-        if not request.user.is_authenticated:
-            return redirect('authentication:login')
-
-        context = {
-            'projects': self.model.objects.all(),
-        }
-        return render(request, self.template_name, context)
+    context_object_name = 'projects'
+    login_url = 'authentication:login'
 
 
 class UserProjectListView(ListView):
@@ -30,9 +24,7 @@ class UserProjectListView(ListView):
 
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs.get('slug'))
-        print(self.kwargs.get('slug'))
         projects = user.project_set.all()
-
         return projects
 
 
@@ -44,6 +36,7 @@ class UserProjectDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        context['group_details'] = ProjectGroup.objects.filter(project__slug=self.kwargs.get('slug'))
         context['comment_form'] = AddCommentForm
         return context
 
@@ -97,6 +90,44 @@ class AddComment(CreateView):
 class DeleteComment(DeleteView):
     model = Comment
     template_name = 'mainapp/project_details/project_details.html'
+
+    def get_success_url(self):
+        return reverse('mainapp:proj_details', kwargs={'slug': self.object.project.slug})
+
+
+class CreateGroup(CreateView):
+    model = ProjectGroup
+    template_name = 'mainapp/project_manipulations/groups.html'
+    form_class = CreateNewGroupForm
+    success_url = '/'
+
+    def get_form(self, *args, **kwargs):
+        form = super().get_form(*args, **kwargs)
+        form.fields['project'].queryset = self.request.user.project_set.all()
+        return form
+
+    def form_valid(self, form):
+        form.instance.group_author = self.request.user
+        instance = form.save()
+        instance.permissions.set([33, 34, 35])  # id of permissions: add_task, change_task, delete_task
+        instance.save()
+        return super().form_valid(form)
+
+    # def get_queryset(self):
+    #     query = self.request.GET.get('user')
+    #     queryset = User.objects.filter(username__iregex=query)
+    #     return queryset
+
+
+class CreateTask(UserInGroupPermissionMixin, CreateView):
+    model = Task
+    template_name = 'mainapp/task_manipulations/create_task.html'
+    form_class = CreateTaskForm
+    
+    def form_valid(self, form):
+        form.instance.project = Project.objects.get(slug=self.kwargs['slug'])
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse('mainapp:proj_details', kwargs={'slug': self.object.project.slug})

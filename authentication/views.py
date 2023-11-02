@@ -16,6 +16,11 @@ class UserSignup(CreateView):
     template_name = 'authentication/registration.html'
     success_url = reverse_lazy('authentication:login')
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.request = self.request
+        return form
+
 
 class UserLogout(LogoutView):
     template_name = 'mainapp/base.html'
