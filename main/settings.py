@@ -44,9 +44,9 @@ INSTALLED_APPS = [
     'ckeditor',
     'fontawesomefree',
     'tempus_dominus',
-    'django_select2'
+    'django_select2',
     
-    
+    # Authentication with social apps
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -137,6 +137,10 @@ CKEDITOR_CONFIGS = {
         'width': 'auto',
     },
 }
+
+SELECT2_JS = "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/js/select2.min.js"
+SELECT2_CSS = "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/css/select2.min.css"
+SELECT2_I18N_PATH = "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/js/i18n"
 
 LOGIN_REDIRECT_URL = '/'
 

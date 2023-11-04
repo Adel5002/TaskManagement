@@ -1,5 +1,7 @@
 {% extends 'mainapp/base.html' %}
 
+{% block title %} Проекты · {{ user.username }} {% endblock %}
+
 {% block content %}
 <div class="container">
     <div class="row mt-5">
@@ -17,10 +19,11 @@
                 <p class="project-tags">{% for t in project.tags.all|slice:':5' %} #{{t}} {% endfor %}</p>
                 {% if project.user == user %}
                     <a class="btn btn-outline-success float-end" href="{% url 'mainapp:update_project' project.slug %}">Редактировать</a>
-                    <form class="float-end me-3" method="post" action="{% url 'mainapp:delete_project' project.slug %}">
+                    <form class="float-end me-2 ms-2" method="post" action="{% url 'mainapp:delete_project' project.slug %}">
                         {% csrf_token %}
                         <button class="btn btn-outline-danger">Удалить</button>
-                    </form><br><br>
+                    </form>
+                    <a class="btn btn-outline-info float-end" href="{% url 'mainapp:groups_list' project.slug %}">Группы</a><br><br>
                 {% else %}
                     <a class="btn btn-outline-dark float-end" href="{{ project.get_absolute_url }}">Перейти</a><br><br>
                 {% endif %}

@@ -1,0 +1,34 @@
+{% extends 'mainapp/base.html' %}
+
+{% block title %}Группы{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mt-5">
+        <div class="col">
+            {% if groups %}
+                {% for group in groups %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h4 class="card-title mb-3">{{ group.name }}</h4>
+                                <h6>Участники</h6>
+                                <ul>
+                                    {% for assistant in group.assistants.all %}
+                                        <li>{{ assistant}}</li>
+                                    {% endfor %}
+                                </ul>
+                                <a class="btn btn-outline-success float-end ms-2" href="{% url 'mainapp:edit_group' group.pk %}">Редактировать</a>
+                                <form class="float-end" action="{% url 'mainapp:delete_group' group.pk %}" method="post">
+                                    {% csrf_token %}
+                                    <button class="btn btn-outline-danger">Удалить</button>
+                                </form>
+                            </div>
+                        </div>
+                {% endfor %}
+            {% else %}
+                <h1 class="text-center">Групп не <a href="{% url 'mainapp:create_group' %}">найдено!</a></h1>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

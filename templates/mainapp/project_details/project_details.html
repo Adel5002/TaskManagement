@@ -1,5 +1,6 @@
 {% extends 'mainapp/base.html' %}
 
+{% block title %}{{ project.name }}{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -10,10 +11,11 @@
         </div>
 
         <h4>Текущие задачи</h4>
-        {% if perms.mainapp.add_task %}
-        <a href="{% url 'mainapp:create_task' project.slug %}">Создать Новую</a>
-        {% endif %}
+
         {% if project.task_set.all %}
+            {% if perms.mainapp.add_task %}
+                <a href="{% url 'mainapp:create_task' project.slug %}">Создать Новую</a>
+            {% endif %}
             {% for tasks in project.task_set.all %}
                 <div class="col-md-6 mt-3"> 
                     <div class="card mb-3">
@@ -33,6 +35,11 @@
                                     {{ tasks.priority }}
                                 {% endif %}
                             </p>
+                            <form class="float-end ms-2" action="{% url 'mainapp:delete_task' project.slug tasks.id %}" method="post">
+                                {% csrf_token %}
+                                <button class="btn btn-outline-success">Удалить</button>
+                            </form>
+                            <a class="btn btn-outline-success float-end" href="{% url 'mainapp:edit_task' project.slug tasks.id %}">Редактировать</a>
                         </div>
                     </div>
                 </div>

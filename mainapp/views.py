@@ -95,9 +95,20 @@ class DeleteComment(DeleteView):
         return reverse('mainapp:proj_details', kwargs={'slug': self.object.project.slug})
 
 
+# GROUP SECTION
+
+class GroupListView(ListView):
+    model = ProjectGroup
+    template_name = 'mainapp/group_manipulations/groups.html'
+    context_object_name = 'groups'
+
+    def get_queryset(self):
+        return ProjectGroup.objects.filter(project__slug=self.kwargs.get('slug'))
+
+
 class CreateGroup(CreateView):
     model = ProjectGroup
-    template_name = 'mainapp/project_manipulations/groups.html'
+    template_name = 'mainapp/group_manipulations/create_group.html'
     form_class = CreateNewGroupForm
     success_url = '/'
 
@@ -113,21 +124,56 @@ class CreateGroup(CreateView):
         instance.save()
         return super().form_valid(form)
 
-    # def get_queryset(self):
-    #     query = self.request.GET.get('user')
-    #     queryset = User.objects.filter(username__iregex=query)
-    #     return queryset
+
+class EditGroup(UpdateView):
+    model = ProjectGroup
+    template_name = 'mainapp/group_manipulations/edit_group.html'
+    form_class = CreateNewGroupForm
+
+    def get_form(self, *args, **kwargs):
+        form = super().get_form(*args, **kwargs)
+        form.fields['project'].queryset = self.request.user.project_set.all()
+        return form
+
+    def get_success_url(self):
+        return reverse('mainapp:groups_list', kwargs={'slug': self.object.project.slug})
 
 
+class DeleteGroup(DeleteView):
+    model = ProjectGroup
+    template_name = 'mainapp/group_manipulations/groups.html'
+
+    def get_success_url(self):
+        return reverse('mainapp:groups_list', kwargs={'slug': self.object.project.slug})
+
+
+# TASK SECTION
 class CreateTask(UserInGroupPermissionMixin, CreateView):
     model = Task
     template_name = 'mainapp/task_manipulations/create_task.html'
     form_class = CreateTaskForm
-    
+
     def form_valid(self, form):
         form.instance.project = Project.objects.get(slug=self.kwargs['slug'])
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('mainapp:proj_details', kwargs={'slug': self.object.project.slug})
+
+
+class EditTask(UpdateView):
+    model = Task
+    template_name = 'mainapp/task_manipulations/edit_task.html'
+    form_class = CreateTaskForm
+
+    def get_success_url(self):
+        return reverse('mainapp:proj_details', kwargs={'slug': self.object.project.slug})
+
+
+class DeleteTask(DeleteView):
+    model = Task
+    template_name = 'mainapp/project_details/project_details.html'
 
     def get_success_url(self):
         return reverse('mainapp:proj_details', kwargs={'slug': self.object.project.slug})

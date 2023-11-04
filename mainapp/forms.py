@@ -1,6 +1,7 @@
 from django import forms
 from tempus_dominus.widgets import DatePicker
 from django.contrib.auth.models import Group
+from django_select2.forms import Select2MultipleWidget
 
 from .models import Comment, Project, ProjectGroup, Task
 
@@ -36,8 +37,9 @@ class CreateNewGroupForm(forms.ModelForm):
         fields = ('name', 'assistants', 'project')
 
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'assistants': forms.SelectMultiple(attrs={'class': 'select-multiple'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Выберите название группы'}),
+            'assistants': Select2MultipleWidget(
+                attrs={'style': 'width: 100%', 'data-placeholder': 'Выберите сотрудников'}),
             'project': forms.Select(attrs={'class': 'form-control'}),
         }
 
@@ -46,7 +48,8 @@ class CreateNewGroupForm(forms.ModelForm):
         user = super().save(commit=True)
         group_name = self.cleaned_data['name']
         author = ProjectGroup.objects.get(name=group_name)
-        author.group_author.groups.add(Group.objects.get(name=group_name))
+        author.group_author.groups.add(
+            Group.objects.get(name=group_name))  # Adding Project Author to the development group
         for assist in assistants:
             assist.groups.add(Group.objects.get(name=Group.objects.get(name=group_name)))
 

@@ -1,0 +1,22 @@
+{% extends 'mainapp/base.html' %}
+
+{% block title %}Редактировать Группу{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <h1 class="text-center mb-5 mt-5">Редактировать {{ object.name }}</h1>
+        <div class="col-sm-6 mx-auto">
+            {{ form.media.css }}
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-dark" type="submit">Редактировать</button>
+                </div>
+            </form>
+            {{ form.media.js }}
+        </div>
+    </div>
+</div>
+{% endblock %}

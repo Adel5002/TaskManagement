@@ -1,18 +1,18 @@
 {% extends 'mainapp/base.html' %}
 
-{% block title %}Создать Задачу{% endblock %}
+{% block title %}Редактировать Задачу{% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="row">
-        <h1 class="text-center mb-5 mt-5">Создать Задачу</h1>
+        <h1 class="text-center mb-5 mt-5">Редактировать {{ object.title }}</h1>
         <div class="col-sm-6 mx-auto">
             <form action="" method="post">
                 {% csrf_token %}
                 {{ form.media }}
                 {{ form.as_p }}
                 <div class="d-grid gap-2">
-                    <button class="btn btn-outline-dark mb-5" type="submit">Создать</button>
+                    <button class="btn btn-outline-dark mb-5" type="submit">Редактировать</button>
                 </div>
                 {{ form.errors }}
             </form>
