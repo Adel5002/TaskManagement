@@ -5,3 +5,11 @@
 .user-projects .project-tags {
     max-width: 300px;
 }
+
+.empty-page h1 {
+    margin-top: 300px;
+}
+
+.bg-for-crud {
+    background-color: whitesmoke;
+}

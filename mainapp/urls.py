@@ -1,7 +1,7 @@
 from django.urls import path, include
 from .views import (ProjectsListView, UserProjectListView, UserProjectDetailView, AddComment, DeleteComment,
                     CreateProject, UpdateProject, DeleteProject, CreateGroup, CreateTask, EditTask, DeleteTask,
-                    EditGroup, DeleteGroup, GroupListView)
+                    EditGroup, DeleteGroup, GroupListView, SearchProjects)
 
 app_name = 'mainapp'
 
@@ -15,6 +15,7 @@ urlpatterns = [
     path('update-project/<slug:slug>/', UpdateProject.as_view(), name='update_project'),
     path('delete-project/<slug:slug>/', DeleteProject.as_view(), name='delete_project'),
     path('project/<slug:slug>/', UserProjectDetailView.as_view(), name='proj_details'),
+    path('search/', SearchProjects.as_view(), name='search_projects'),
 
     # COMMENT SECTION
     path('project/<slug:slug>/add-comment/', AddComment.as_view(), name='add_comment'),

@@ -5,16 +5,17 @@
 {% block content %}
 <div class="container">
     <div class="row mt-5">
+        {% if user == projects.first.user  %}
         <div>
             <a class="btn btn-outline-dark" href="{% url 'mainapp:new_project' %}">Новый <i class="fa-solid fa-plus" style="color: #3f3939;"></i></a>
             <a class="btn btn-outline-dark" href="{% url 'mainapp:create_group' %}">Группа <i class="fa-solid fa-plus" style="color: #3f3939;"></i></a>
-            
         </div>
+        {% endif %}
         {% if projects %}
         {% for project in projects %}
         <div class="col-sm-6">
             <div class="form-control user-projects mt-5">
-                <a style="text-decoration: none;" href="{{ project.get_absolute_url }}"><h4 class="mt-3">{{ project.name }}</h4></a>
+                <a class="text-decoration-none href="{{ project.get_absolute_url }}"><h4 class="mt-3">{{ project.name }}</h4></a>
                 <p>{{ project.description|safe|truncatechars:70 }}</p>
                 <p class="project-tags">{% for t in project.tags.all|slice:':5' %} #{{t}} {% endfor %}</p>
                 {% if project.user == user %}
@@ -29,10 +30,9 @@
                 {% endif %}
             </div>
         </div>
-
         {% endfor %}
         {% else %}
-            <div class="text-center" style="margin-top: 300px;">
+            <div class="text-center empty-page">
                 <h1>Здесь пока ничего нет</h1>
             </div>
         {% endif %}

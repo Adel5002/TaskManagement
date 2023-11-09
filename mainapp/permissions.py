@@ -22,3 +22,13 @@ class UserInGroupPermissionMixin:
         if not self.has_permission():
             raise Http404
         return super().dispatch(request, *args, **kwargs)
+
+
+class OnlyAuthorMixin(UserInGroupPermissionMixin):
+    def has_permission(self):
+        return self.request.user == self.get_object().user
+
+
+class OnlyGroupAuthorMixin(UserInGroupPermissionMixin):
+    def has_permission(self):
+        return self.request.user == self.get_object().group_author

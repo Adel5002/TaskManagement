@@ -13,7 +13,10 @@
         <h4>Текущие задачи</h4>
 
         {% if project.task_set.all %}
-            {% if perms.mainapp.add_task %}
+            {% if project.user == user %}
+                <a href="{% url 'mainapp:create_task' project.slug %}">Создать Новую</a>
+            {% elif group_details|length == 0 %}
+            {% elif perms.mainapp.add_task %}
                 <a href="{% url 'mainapp:create_task' project.slug %}">Создать Новую</a>
             {% endif %}
             {% for tasks in project.task_set.all %}
@@ -22,6 +25,7 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ tasks.title }}</h5>
                             <strong>Описание</strong>: {{ tasks.description|safe }}
+                            <p class="card-text"><strong>Начал</strong>: {{ tasks.user }}</p>
                             <p class="card-text"><strong>Начало</strong>: {{ tasks.started }}</p>
                             <p class="card-text"><strong>Дедлайн</strong>: {{ tasks.deadline }}</p>
                             <p class="card-text"><strong>Приоритет</strong>: 
@@ -35,17 +39,35 @@
                                     {{ tasks.priority }}
                                 {% endif %}
                             </p>
-                            <form class="float-end ms-2" action="{% url 'mainapp:delete_task' project.slug tasks.id %}" method="post">
-                                {% csrf_token %}
-                                <button class="btn btn-outline-success">Удалить</button>
-                            </form>
-                            <a class="btn btn-outline-success float-end" href="{% url 'mainapp:edit_task' project.slug tasks.id %}">Редактировать</a>
+
+                            {% if project.user == user %}
+                                <form class="float-end ms-2" action="{% url 'mainapp:delete_task' project.slug tasks.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button class="btn btn-outline-success">Удалить</button>
+                                </form>
+                                <a class="btn btn-outline-success float-end" href="{% url 'mainapp:edit_task' project.slug tasks.id %}">Редактировать</a>
+                            {% elif group_details|length == 0 %}
+                            {% elif perms.mainapp.change_task %}
+                                <form class="float-end ms-2" action="{% url 'mainapp:delete_task' project.slug tasks.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button class="btn btn-outline-success">Удалить</button>
+                                </form>
+                                
+                                <a class="btn btn-outline-success float-end" href="{% url 'mainapp:edit_task' project.slug tasks.id %}">Редактировать</a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             {% endfor %}
+
         {% else %}
-            <h5>На данный момент задач не <a href="{% url 'mainapp:create_task' project.slug %}">найдено!</a></h5>
+            {% if project.user == user %}
+                <h5>На данный момент задач не <a href="{% url 'mainapp:create_task' project.slug %}">найдено!</a></h5>
+            {% elif group_details|length == 0 %}
+                <h5>На данный момент задач не найдено!</h5>
+            {% elif perms.mainapp.add_task %}
+                <h5>На данный момент задач не <a href="{% url 'mainapp:create_task' project.slug %}">найдено!</a></h5>
+            {% endif %}
         {% endif %}
     </div>
     <div class="row">

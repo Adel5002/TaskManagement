@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.db.models import Q
 
 from .models import Project, Comment, ProjectGroup, Task
 from .forms import AddCommentForm, CreteProjectForm, CreateNewGroupForm, CreateTaskForm
-from .permissions import UserInGroupPermissionMixin
+from .permissions import UserInGroupPermissionMixin, OnlyAuthorMixin, OnlyGroupAuthorMixin
 
 
 # PROJECT RENDERING SECTION
@@ -35,10 +36,24 @@ class UserProjectDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        user_group = ProjectGroup.objects.filter(project__slug=self.kwargs.get('slug'))
 
-        context['group_details'] = ProjectGroup.objects.filter(project__slug=self.kwargs.get('slug'))
+        context['group_details'] = user_group
         context['comment_form'] = AddCommentForm
         return context
+
+
+class SearchProjects(ListView):
+    model = Project
+    template_name = 'mainapp/search_projects/search_projects.html'
+    context_object_name = 'projects'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.GET.get('search-projects')
+        if query:
+            queryset = Project.objects.filter(Q(name__iregex=query) | Q(tags__tag__iregex=query))
+        return queryset
 
 
 # PROJECT MANIPULATIONS SECTION
@@ -55,7 +70,7 @@ class CreateProject(CreateView):
         return reverse('mainapp:proj_details', kwargs={'slug': self.object.slug})
 
 
-class UpdateProject(UpdateView):
+class UpdateProject(OnlyAuthorMixin, UpdateView):
     model = Project
     form_class = CreteProjectForm
     template_name = 'mainapp/project_manipulations/update_project.html'
@@ -64,7 +79,7 @@ class UpdateProject(UpdateView):
         return reverse('mainapp:proj_details', kwargs={'slug': self.object.slug})
 
 
-class DeleteProject(DeleteView):
+class DeleteProject(OnlyAuthorMixin, DeleteView):
     model = Project
     template_name = 'mainapp/index/user_project.html'
 
@@ -87,7 +102,7 @@ class AddComment(CreateView):
         return reverse('mainapp:proj_details', kwargs={'slug': self.object.project.slug})
 
 
-class DeleteComment(DeleteView):
+class DeleteComment(OnlyAuthorMixin, DeleteView):
     model = Comment
     template_name = 'mainapp/project_details/project_details.html'
 
@@ -125,7 +140,7 @@ class CreateGroup(CreateView):
         return super().form_valid(form)
 
 
-class EditGroup(UpdateView):
+class EditGroup(OnlyGroupAuthorMixin, UpdateView):
     model = ProjectGroup
     template_name = 'mainapp/group_manipulations/edit_group.html'
     form_class = CreateNewGroupForm
@@ -139,7 +154,7 @@ class EditGroup(UpdateView):
         return reverse('mainapp:groups_list', kwargs={'slug': self.object.project.slug})
 
 
-class DeleteGroup(DeleteView):
+class DeleteGroup(OnlyGroupAuthorMixin, DeleteView):
     model = ProjectGroup
     template_name = 'mainapp/group_manipulations/groups.html'
 
@@ -162,7 +177,7 @@ class CreateTask(UserInGroupPermissionMixin, CreateView):
         return reverse('mainapp:proj_details', kwargs={'slug': self.object.project.slug})
 
 
-class EditTask(UpdateView):
+class EditTask(UserInGroupPermissionMixin, UpdateView):
     model = Task
     template_name = 'mainapp/task_manipulations/edit_task.html'
     form_class = CreateTaskForm
@@ -171,7 +186,7 @@ class EditTask(UpdateView):
         return reverse('mainapp:proj_details', kwargs={'slug': self.object.project.slug})
 
 
-class DeleteTask(DeleteView):
+class DeleteTask(UserInGroupPermissionMixin, DeleteView):
     model = Task
     template_name = 'mainapp/project_details/project_details.html'
 
