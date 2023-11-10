@@ -52,7 +52,7 @@ class SearchProjects(ListView):
         queryset = super().get_queryset()
         query = self.request.GET.get('search-projects')
         if query:
-            queryset = Project.objects.filter(Q(name__iregex=query) | Q(tags__tag__iregex=query))
+            queryset = Project.objects.filter(Q(name__iregex=query) | Q(tags__tag__iregex=query)).distinct()
         return queryset
 
 
